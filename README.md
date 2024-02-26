@@ -95,8 +95,6 @@ workflows:
 
 - Notice that we have two types of tasks (jobs) that we want CircleCI to do: We want to run main.py, and we want to run our tests. We're also specifying that for every branch we want to perform the build job, and the test job.
 
-- We also need to give CircleCI access to our repo so that they're authorized to run these jobs. Go to [CircleCI's website](https://circleci.com/), login in with your github account, and authorize them to access your circlecicd-demo repo that we just created. 
-
 - Push the new config file to github.
 
 >git add .
@@ -105,5 +103,60 @@ workflows:
 
 >git push
 
+- We also need to give CircleCI access to our repo so that they're authorized to run these jobs. Go to [CircleCI's website](https://circleci.com/), login in with your github account, and authorize them to access your circlecicd-demo repo that we just created. 
+
+  - Open [CircleCI](https://circleci.com/)
+  - Click **"Got To Application"**
+  - Click "**Signed up for CircleCI with GitHub**"
+  - Click **Log in with Github**
+  - After login, navigate to **Projects** Menu (left side)
+  - Click **Set Up Project** button next to **circlecicd-demo**
+  - Choose "**Fastest:** Use the .circleci/config.yml in my repo"
+  - Click "**Set Up Project**"
+
 - CircleCI should detect the code changes and run our build_and_test workflow for our branch. We should be able to see the jobs run on CircleCI's website.
-- 
+
+## 4. Testing That CircleCI Is Working
+
+We have CI running now so let's test it out. Let's add a line to our unit test for our Add function to make sure 5 + 5 is equal to 10.
+
+Check out a new branch:
+
+> git checkout -b add-test
+
+
+​Add the following line of code to our TestAdd() function in "main-test.py":
+
+```python
+assert Add(5,5) == 10
+```
+
+Push this branch up to github.
+
+> git add .
+
+> git commit -m "Adds test to make sure 5 + 5 is equal to 10"
+
+> git push --set-upstream origin add-test
+
+
+Go to our github repo and make a Pull Request for this branch to see if CircleCI is running the jobs.
+
+We should see a build job and a test job with green checkmarks since they pass. We have CI working properly.
+
+Now, let's see what happens if we mess up old code by making our Add function do multiplication instead of tradition. In "main.py" change our Add function to multiply instead of add.
+
+```python
+return a * b
+```
+
+Commit this change and push our updated branch to github.
+
+> git add .
+
+> git commit -m "Add function now multiplies instead of adds"
+
+> git push
+
+
+If we look at our Pull Request, we should see that the build step passes since the code is still functional, but now our test fails since 2 * 3 isn't 5. So now we'd know the code change being introduced by this branch is harmful and we shouldn't merge this PR (and CircleCI can use that info to stop other jobs, like making sure not to deploy if the tests fail). 
