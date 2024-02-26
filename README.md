@@ -98,3 +98,12 @@ workflows:
 - We also need to give CircleCI access to our repo so that they're authorized to run these jobs. Go to [CircleCI's website](https://circleci.com/), login in with your github account, and authorize them to access your circlecicd-demo repo that we just created. 
 
 - Push the new config file to github.
+
+>git add .
+
+>git commit -m "Adding CircleCI config file"
+
+>git push
+
+- CircleCI should detect the code changes and run our build_and_test workflow for our branch. We should be able to see the jobs run on CircleCI's website.
+- 
